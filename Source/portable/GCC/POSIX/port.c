@@ -315,6 +315,8 @@ void vPortYield( void )
 pthread_t xTaskToSuspend;
 pthread_t xTaskToResume;
 
+const TaskHandle_t xCurrentTask = xTaskGetCurrentTaskHandle();
+
 	if ( 0 == pthread_mutex_lock( &xSingleThreadMutex ) )
 	{
 		xTaskToSuspend = prvGetThreadHandle( xTaskGetCurrentTaskHandle() );
@@ -336,6 +338,10 @@ pthread_t xTaskToResume;
 			/* Yielding to self */
 			(void)pthread_mutex_unlock( &xSingleThreadMutex );
 		}
+	}
+	if ( xCurrentTask != xTaskGetCurrentTaskHandle()) {
+		printf("vPortYield yielding to another thread: old = %p, now = %p\n",
+               xCurrentTask, xTaskGetCurrentTaskHandle());
 	}
 }
 /*-----------------------------------------------------------*/
